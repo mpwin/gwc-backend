@@ -141,11 +141,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Production configuration
 if not DEBUG:
     CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
-
     ssl_enabled = os.getenv('ENABLE_SSL', 'False') == 'True'
-    CSRF_COOKIE_SECURE = ssl_enabled
-    SECURE_SSL_REDIRECT = ssl_enabled
-    SESSION_COOKIE_SECURE = ssl_enabled
+
+    if ssl_enabled:
+      CSRF_COOKIE_SECURE = True
+      SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+      SECURE_SSL_REDIRECT = True
+      SESSION_COOKIE_SECURE = True
 
 # Development configuration
 else:
